@@ -41,14 +41,14 @@ public class DiceCommandExecutor implements CommandExecutor {
             }
             //ダイスの処理
             int random = new Random().nextInt(sides) + 1;
-            String resultMessage = String.format("%sが%d面ダイスを振って%dが出た", player.getName(), sides, random);
+            String resultmessage = String.format("%sが%d面ダイスを振って%dが出た", player.getName(), sides, random);
             String pl = "[Dice]";
 
             //プレイヤーへのメッセージ
             player.sendMessage(pl + "結果 : " + random);
 
             //サーバー全体へのメッセージ
-            plugin.getServer().broadcastMessage(resultMessage);
+            plugin.getServer().broadcastMessage(resultmessage);
 
             return true;
         }

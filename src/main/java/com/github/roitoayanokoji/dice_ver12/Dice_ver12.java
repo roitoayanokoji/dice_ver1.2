@@ -13,6 +13,8 @@ public final class Dice_ver12 extends JavaPlugin {
         getCommand("dice").setExecutor(new DiceResultLog(this));
         getCommand("dice").setExecutor(new DiceHelp(this));
 
+        //１つのクラスに複数のCommandExecutorを使用すると最後のに上書きされるためDiceHelpしか機能しない。
+
     }
 
     @Override
