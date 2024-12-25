@@ -16,42 +16,55 @@ public class DiceCommandExecutor implements CommandExecutor {
         this.plugin = plugin;
     }
 
+    String pl = "[Dice]";
+
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args){
-        if (command.getName().equalsIgnoreCase("dice")){
-            if (!(sender instanceof Player)){
-                sender.sendMessage("プレイヤーのみ実行可能");
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (command.getName().equalsIgnoreCase("dice")) {
+            if (!(sender instanceof Player)) {
+                sender.sendMessage("このコマンドはプレイヤーのみ実行可能です。");
+                return true;
             }
             Player player = (Player) sender;
 
-            int sides = 6;
-            //ダイス面の初期値
-            /* /dice の場合6面ダイスを振る */
-            if (args.length > 0){
-                try {
-                    sides = Integer.parseInt(args[0]);
-                    if (sides <= 0){
-                        player.sendMessage("０面ダイスってなんやねん");
-                        return true;
-                    }
-                } catch (NumberFormatException e) {
-                    player.sendMessage("指定が間違っています。");
-                    return true;
-                }
+            if (args.length == 0) {
+                // "/dice"
+                return handleDiceRoll(player);
+            } else if (args[0].equalsIgnoreCase("log")) {
+                // "/dice log"
+                return handleDiceLog(player);
+            } else if (args[0].equalsIgnoreCase("help")) {
+                // "/dice help"
+                return handleDiceHelp(player);
+            } else {
+                player.sendMessage(pl + "不明なコマンドです。 [/dice help]");
+                return true;
             }
-            //ダイスの処理
-            int random = new Random().nextInt(sides) + 1;
-            String resultmessage = String.format("%sが%d面ダイスを振って%dが出た", player.getName(), sides, random);
-            String pl = "[Dice]";
-
-            //プレイヤーへのメッセージ
-            player.sendMessage(pl + "結果 : " + random);
-
-            //サーバー全体へのメッセージ
-            plugin.getServer().broadcastMessage(resultmessage);
-
-            return true;
         }
         return false;
+    }
+
+    private boolean handleDiceRoll(Player player) {
+        int sides = 6; // "/dice"の初期値" //
+        int random = new Random().nextInt(sides) + 1;
+        plugin.getServer().broadcastMessage(pl + player.getName() + "は" + sides + "面ダイスを振って" + random + "が出た。");
+        return true;
+    }
+
+    private  boolean handleDiceLog(Player player) {
+        return true;
+    }
+
+    private  boolean handleDiceHelp(Player player) {
+        String set1 = "=== Dice Plugin Help ===";
+        String set2 = "========================";
+
+        player.sendMessage(set1);
+        player.sendMessage("/dice - 指定がない場合6面ダイスを振ります。");
+        player.sendMessage("/dice [] - 指定したダイスを振ります。");
+        player.sendMessage("/dice log - ログイン時にダイスを振ったときのログを表示");
+        player.sendMessage("/dice help - コマンドのヘルプを表示");
+        player.sendMessage(set2);
+        return true;
     }
 }
