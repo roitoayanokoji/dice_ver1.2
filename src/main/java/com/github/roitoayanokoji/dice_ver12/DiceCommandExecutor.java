@@ -54,6 +54,7 @@ public class DiceCommandExecutor implements CommandExecutor {
     private  boolean handleDiceLog(Player player) {
         //ログインしている時にダイスを振った場合そのログを全部もしくは上から５つぐらいのログを出す
         //もし全部のログを出す場合1ページ最大10個ほどにする
+        player.sendMessage("未実装");
         return true;
     }
 
