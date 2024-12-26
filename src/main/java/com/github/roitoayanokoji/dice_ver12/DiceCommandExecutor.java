@@ -82,7 +82,7 @@ public class DiceCommandExecutor implements CommandExecutor {
         for (int i = history.size()-displaylimit; i<history.size(); i++){
             player.sendMessage(history.get(i));
         }
-        player.sendMessage("=================");
+        player.sendMessage("=======================");
         return true;
     }
 
