@@ -6,11 +6,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 public class DiceCommandExecutor implements CommandExecutor {
 
     private final Dice_ver12 plugin;
+    private final HashMap<String, List<String>> diceHistory = new HashMap<>();
 
     public DiceCommandExecutor(Dice_ver12 plugin){
         this.plugin = plugin;
@@ -47,14 +51,27 @@ public class DiceCommandExecutor implements CommandExecutor {
     private boolean handleDiceRoll(Player player) {
         int sides = 6; // "/dice"の初期値" //
         int random = new Random().nextInt(sides) + 1;
+        //save dice result
+         String SaveDiceLog = (sides + "面ダイスを振って" + random + "が出た。");
+        diceHistory.computeIfAbsent(player.getName(), k -> new ArrayList<>()).add(SaveDiceLog);
+
         plugin.getServer().broadcastMessage(pl + player.getName() + "は" + sides + "面ダイスを振って" + random + "が出た。");
         return true;
     }
 
     private  boolean handleDiceLog(Player player) {
-        //ログインしている時にダイスを振った場合そのログを全部もしくは上から５つぐらいのログを出す
-        //もし全部のログを出す場合1ページ最大10個ほどにする
-        player.sendMessage("未実装");
+        List<String> history = diceHistory.get(player.getName());
+
+        if (history == null || history.isEmpty()) {
+            player.sendMessage(pl + "ダイスの使用履歴がない為表示できません。");
+            return true;
+        }
+        player.sendMessage("ダイス履歴");
+        int displaylimit = Math.min(history.size(),5);
+        for (int i = history.size()-displaylimit; i<history.size(); i++){
+            player.sendMessage(history.get(i));
+        }
+        player.sendMessage("=================");
         return true;
     }
 
