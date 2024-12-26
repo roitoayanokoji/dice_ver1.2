@@ -41,18 +41,29 @@ public class DiceCommandExecutor implements CommandExecutor {
                 // "/dice help"
                 return handleDiceHelp(player);
             } else {
-                player.sendMessage(pl + "不明なコマンドです。 [/dice help]");
-                return true;
+                try {
+                    int sides = Integer.parseInt(args[0]);
+                    return handleCustomDiceRoll(player,sides);
+                } catch (NumberFormatException e){
+                    player.sendMessage(pl + "無効な値です。整数値を入力してください!");
+                    return true;
+                }
             }
         }
         return false;
     }
 
-    private boolean handleDiceRoll(Player player) {
-        int sides = 6; // "/dice"の初期値" //
+    private boolean handleDiceRoll(Player player){
+        return handleCustomDiceRoll(player,6);
+    }
+
+    private boolean handleCustomDiceRoll(Player player,int sides) {
+        if (sides <= 0){
+            player.sendMessage(pl + "面の数は1以上を指定してください。");
+        }
         int random = new Random().nextInt(sides) + 1;
         //save dice result
-         String SaveDiceLog = (sides + "面ダイスを振って" + random + "が出た。");
+        String SaveDiceLog = (sides + "面ダイスを振って" + random + "が出た。");
         diceHistory.computeIfAbsent(player.getName(), k -> new ArrayList<>()).add(SaveDiceLog);
 
         plugin.getServer().broadcastMessage(pl + player.getName() + "は" + sides + "面ダイスを振って" + random + "が出た。");
@@ -66,7 +77,7 @@ public class DiceCommandExecutor implements CommandExecutor {
             player.sendMessage(pl + "ダイスの使用履歴がない為表示できません。");
             return true;
         }
-        player.sendMessage("ダイス履歴");
+        player.sendMessage("======= ダイス履歴 =======");
         int displaylimit = Math.min(history.size(),5);
         for (int i = history.size()-displaylimit; i<history.size(); i++){
             player.sendMessage(history.get(i));
@@ -76,7 +87,7 @@ public class DiceCommandExecutor implements CommandExecutor {
     }
 
     private  boolean handleDiceHelp(Player player) {
-        String set1 = "=== Dice Plugin Help ===";
+        String set1 = "===== Dice Plugin Help =====";
         String set2 = "========================";
 
         player.sendMessage(set1);
